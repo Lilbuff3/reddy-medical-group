@@ -491,6 +491,48 @@ a:hover {
   border-radius: var(--radius-lg);
   padding: 1.75rem;
   box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.office-photo-header {
+  position: relative;
+  margin: -1.75rem -1.75rem 1.25rem -1.75rem;
+  overflow: hidden;
+  border-top-left-radius: var(--radius-lg);
+  border-top-right-radius: var(--radius-lg);
+  height: 210px;
+  background: #1e293b;
+}
+
+.office-header-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.office-quick-card:hover .office-header-img {
+  transform: scale(1.02);
+}
+
+.photo-overlay-badge {
+  position: absolute;
+  bottom: 12px;
+  left: 14px;
+  background: rgba(15, 23, 42, 0.88);
+  backdrop-filter: blur(8px);
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
 }
 
 .quick-card-header {
@@ -1022,6 +1064,45 @@ a:hover {
 .panel-sidebar {
   border-left: 1px solid var(--border-light);
   padding-left: 2rem;
+}
+
+.sidebar-photo-card {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--border-medium);
+  background: #ffffff;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 1.25rem;
+}
+
+.suite-preview-img {
+  width: 100%;
+  height: 175px;
+  object-fit: cover;
+  object-position: center 30%;
+  display: block;
+}
+
+.photo-label {
+  padding: 0.875rem 1rem;
+  background: var(--bg-light);
+  border-top: 1px solid var(--border-light);
+}
+
+.photo-label strong {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 0.2rem;
+}
+
+.photo-label span {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.4;
 }
 
 .sidebar-box {
