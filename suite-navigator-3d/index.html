@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>God's Eye 3D Suite Navigator™ | Google 3D Earth Wayfinder</title>
+  <meta name="description" content="Photorealistic 3D 'God's Eye' spatial wayfinder powered by CesiumJS and Google Photorealistic 3D Tiles.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- CesiumJS CSS -->
+  <link rel="stylesheet" href="https://cesium.com/downloads/cesiumjs/releases/1.124/Build/Cesium/Widgets/widgets.css">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Fullscreen 3D Cesium Container -->
+  <div id="cesiumContainer"></div>
+
+  <!-- Loading & Telemetry Overlay -->
+  <div id="loadingOverlay" class="loading-overlay">
+    <div class="loader-content">
+      <div class="loader-radar">
+        <div class="radar-sweep"></div>
+      </div>
+      <h2 class="loader-title">INITIALIZING 3D GOD'S EYE</h2>
+      <p class="loader-sub">Acquiring 3D Photorealistic Satellite Mesh for 7045 N Maple Ave...</p>
+      <div class="loader-progress">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Spatial Intelligence HUD -->
+  <header class="top-hud">
+    <div class="hud-left">
+      <div class="hud-logo">
+        <span class="pulse-dot"></span>
+        <span class="hud-brand">GOD'S EYE 3D</span>
+      </div>
+      <div class="hud-loc">
+        <span class="loc-name">Meridian Professional Center</span>
+        <span class="loc-coords">36.8396° N, 119.7562° W &bull; Fresno, CA</span>
+      </div>
+    </div>
+
+    <!-- Telemetry Readouts -->
+    <div class="hud-telemetry">
+      <div class="telem-item">
+        <span class="telem-label">ALTITUDE</span>
+        <span class="telem-val" id="altVal">220m</span>
+      </div>
+      <div class="telem-item">
+        <span class="telem-label">PITCH</span>
+        <span class="telem-val" id="pitchVal">-42°</span>
+      </div>
+      <div class="telem-item">
+        <span class="telem-label">HEADING</span>
+        <span class="telem-val" id="headingVal">015°</span>
+      </div>
+    </div>
+
+    <!-- Settings Button -->
+    <div class="hud-right">
+      <button class="hud-btn" id="btnSettings" onclick="toggleConfigModal()" title="Configure Google Maps API Key / 3D Tiles">
+        ⚙️ Config
+      </button>
+    </div>
+  </header>
+
+  <!-- Destination Mode Pill Switcher -->
+  <div class="destination-bar">
+    <button class="dest-btn active" id="btnClinic" onclick="setDestination('clinic')">
+      <span class="dest-icon">🩺</span>
+      <div class="dest-info">
+        <strong>Suite 101 &bull; Clinical Check-In</strong>
+        <span>Dr. Kiran Reddy &bull; Primary Patient Entrance</span>
+      </div>
+    </button>
+    <button class="dest-btn" id="btnBilling" onclick="setDestination('billing')">
+      <span class="dest-icon">💼</span>
+      <div class="dest-info">
+        <strong>Suite 108 &bull; Billing &amp; Corporate</strong>
+        <span>Reddy Medical Group Administration</span>
+      </div>
+    </button>
+  </div>
+
+  <!-- 3D Camera Missions Bar (Cinematic Controls) -->
+  <div class="camera-controls-bar">
+    <button class="cam-btn" onclick="flyToMission('approach')">
+      <span class="cam-icon">🚗</span>
+      <span>1. Maple Ave Approach</span>
+    </button>
+    <button class="cam-btn" onclick="flyToMission('parking')">
+      <span class="cam-icon">🅿️</span>
+      <span>2. Drone Parking Angle</span>
+    </button>
+    <button class="cam-btn" onclick="flyToMission('doorway')">
+      <span class="cam-icon">🚪</span>
+      <span>3. Doorway Arrival</span>
+    </button>
+    <button class="cam-btn" id="btnOrbit" onclick="toggleOrbit()">
+      <span class="cam-icon" id="orbitIcon">🔄</span>
+      <span id="orbitText">Orbit 360°</span>
+    </button>
+  </div>
+
+  <!-- Bottom Turn-by-Turn Mission Card -->
+  <footer class="bottom-mission-card">
+    <div class="mission-header">
+      <div class="mission-badge-wrap">
+        <span class="mission-step-pill" id="stepPill">PHASE 1: DRIVEWAY APPROACH</span>
+        <span class="mission-eta" id="etaLabel">⚡ Turn in from Maple Ave</span>
+      </div>
+      <span class="mission-provider" id="providerLabel">Rendering: Photorealistic Satellite</span>
+    </div>
+
+    <div class="mission-body">
+      <div class="mission-icon-box" id="missionIcon">🚗</div>
+      <div class="mission-desc">
+        <h3 id="missionHeading">Turn East off N. Maple Avenue</h3>
+        <p id="missionDetail">Enter the North Driveway of Meridian Professional Center into the front parking complex.</p>
+      </div>
+    </div>
+
+    <div class="mission-actions">
+      <button class="nav-btn prev-btn" id="btnPrev" onclick="prevStep()" disabled>&larr; Prev Phase</button>
+      <button class="nav-btn next-btn" id="btnNext" onclick="nextStep()">Next Phase &rarr;</button>
+    </div>
+  </footer>
+
+  <!-- Google 3D Tiles Configuration Modal -->
+  <div class="modal-overlay" id="configModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Google Photorealistic 3D Tiles Configuration</h3>
+        <button class="close-btn" onclick="toggleConfigModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-intro">
+          This system is currently running on <strong>High-Resolution 3D Satellite Orthoimagery &amp; Elevation</strong>. To upgrade to <strong>Google Photorealistic 3D Mesh Tiles</strong> with millimeter-level 3D building geometry:
+        </p>
+
+        <div class="config-field">
+          <label for="googleApiKeyInput">Google Maps Platform 3D Tiles API Key</label>
+          <input type="password" id="googleApiKeyInput" placeholder="Paste your Google API Key (AIzaSy...)" autocomplete="off">
+          <span class="field-hint">Requires 'Map Tiles API' enabled in Google Cloud Console.</span>
+        </div>
+
+        <div class="config-field">
+          <label for="cesiumTokenInput">Cesium Ion Access Token (Optional Alternative)</label>
+          <input type="password" id="cesiumTokenInput" placeholder="Paste Cesium Ion Token (eyJ...)" autocomplete="off">
+          <span class="field-hint">Provides Cesium-hosted Google Photorealistic 3D asset #2275207.</span>
+        </div>
+
+        <div class="modal-action-row">
+          <button class="save-btn" onclick="saveCredentials()">Apply &amp; Reload 3D Scene</button>
+          <button class="reset-btn" onclick="clearCredentials()">Reset to Satellite Default</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CesiumJS Bundle -->
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.124/Build/Cesium/Cesium.js"></script>
+
+  <!-- Application Logic -->
+  <script src="app.js"></script>
+</body>
+</html>

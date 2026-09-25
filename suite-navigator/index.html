@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Satellite Suite Navigator™ | Real Aerial Wayfinder</title>
+  <meta name="description" content="Real Satellite Aerial Wayfinding for Medical Centers - Navigate from Street to Parking Stall to Exact Clinic Suite Door.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Leaflet Map CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  
+  <style>
+    :root {
+      --primary: #0f2c59;
+      --accent: #38bdf8;
+      --emerald: #10b981;
+      --dark: #090d16;
+      --panel-bg: rgba(15, 23, 42, 0.92);
+      --border: rgba(255, 255, 255, 0.15);
+      --text: #f8fafc;
+      --muted: #94a3b8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--dark);
+      color: var(--text);
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Map Container fills viewport */
+    #map {
+      width: 100vw;
+      height: 100vh;
+      z-index: 1;
+      background: #0b1120;
+    }
+
+    /* Top Floating Header HUD */
+    .top-hud {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      right: 16px;
+      max-width: 520px;
+      margin: 0 auto;
+      z-index: 1000;
+      background: var(--panel-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px 16px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .hud-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .hud-sub {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+    .hud-badge {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Floating Destination Selector Bar */
+    .dest-switcher {
+      position: absolute;
+      top: 84px;
+      left: 16px;
+      right: 16px;
+      max-width: 520px;
+      margin: 0 auto;
+      z-index: 1000;
+      background: var(--panel-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 6px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    }
+    .switch-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--muted);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 8px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      line-height: 1.2;
+    }
+    .switch-btn small {
+      font-size: 0.675rem;
+      font-weight: 500;
+      opacity: 0.8;
+      margin-top: 2px;
+    }
+    .switch-btn.active {
+      background: #10b981;
+      color: #ffffff;
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+    }
+    .switch-btn.active.billing-btn {
+      background: #0284c7;
+      box-shadow: 0 4px 15px rgba(2, 132, 199, 0.4);
+    }
+
+    /* Bottom Turn-by-Turn Card */
+    .bottom-card {
+      position: absolute;
+      bottom: 20px;
+      left: 16px;
+      right: 16px;
+      max-width: 520px;
+      margin: 0 auto;
+      z-index: 1000;
+      background: var(--panel-bg);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+      animation: slideUp 0.3s ease-out;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .step-tag-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .step-pill {
+      background: #38bdf8;
+      color: #090d16;
+      font-size: 0.675rem;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+    }
+    .eta-label {
+      font-size: 0.75rem;
+      color: #34d399;
+      font-weight: 700;
+    }
+
+    .step-detail-row {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .step-icon-box {
+      width: 44px;
+      height: 44px;
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+    .step-text h3 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 2px;
+    }
+    .step-text p {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    /* Carousel Step Controls */
+    .step-controls {
+      display: flex;
+      gap: 8px;
+    }
+    .ctrl-btn {
+      flex: 1;
+      padding: 10px;
+      border-radius: 10px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: 0.825rem;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+    .btn-prev {
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+    }
+    .btn-prev:hover { background: rgba(255, 255, 255, 0.15); }
+    .btn-next {
+      background: #10b981;
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+    }
+    .btn-next:hover { background: #059669; }
+
+    /* Map Layer & Camera Control Pills */
+    .map-tools {
+      position: absolute;
+      top: 156px;
+      right: 16px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .tool-btn {
+      background: var(--panel-bg);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+      color: #ffffff;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.1rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      transition: all 0.2s;
+    }
+    .tool-btn:hover {
+      background: #1e293b;
+      transform: scale(1.05);
+    }
+    .tool-btn.active {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* Custom Leaflet Pulsing Markers */
+    .pulsing-pin {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #10b981;
+      border: 3px solid #ffffff;
+      box-shadow: 0 0 15px #10b981;
+      animation: pulseAnim 1.5s infinite;
+    }
+    .pulsing-pin.blue {
+      background: #0284c7;
+      box-shadow: 0 0 15px #0284c7;
+    }
+    @keyframes pulseAnim {
+      0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { transform: scale(1.2); box-shadow: 0 0 0 12px rgba(16, 185, 129, 0); }
+      100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    .marker-label {
+      background: rgba(15, 23, 42, 0.9);
+      color: #ffffff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      white-space: nowrap;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+      margin-top: -30px;
+      display: inline-block;
+    }
+
+    /* Animated Polyline */
+    .leaflet-interactive.animated-path {
+      stroke-dasharray: 10, 10;
+      animation: dashWalk 1.2s linear infinite;
+    }
+    @keyframes dashWalk {
+      from { stroke-dashoffset: 40; }
+      to { stroke-dashoffset: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Map Container -->
+  <div id="map"></div>
+
+  <!-- Top HUD Header -->
+  <div class="top-hud">
+    <div>
+      <div class="hud-title">
+        <span>🛰️</span>
+        <span>Satellite Suite Navigator™</span>
+      </div>
+      <div class="hud-sub">Meridian Center &bull; 7045 N Maple Ave, Fresno</div>
+    </div>
+    <span class="hud-badge">High-Res Aerial</span>
+  </div>
+
+  <!-- Destination Switcher -->
+  <div class="dest-switcher">
+    <button class="switch-btn active" id="btnClinic" onclick="setDestination('clinic')">
+      <span>🩺 Clinical Check-In</span>
+      <small>Suite 101 &bull; Dr. Kiran Reddy</small>
+    </button>
+    <button class="switch-btn" id="btnBilling" onclick="setDestination('billing')">
+      <span>💼 Billing &amp; Corporate</span>
+      <small>Suite 108 &bull; Administration</small>
+    </button>
+  </div>
+
+  <!-- Map Tools (Satellite / X-Ray / Center) -->
+  <div class="map-tools">
+    <button class="tool-btn active" id="btnSatLayer" title="Satellite View" onclick="toggleLayer('sat')">🛰️</button>
+    <button class="tool-btn" id="btnStreetLayer" title="Street Map" onclick="toggleLayer('street')">🗺️</button>
+    <button class="tool-btn" title="Re-Center on Door" onclick="centerOnDoor()">🎯</button>
+  </div>
+
+  <!-- Bottom Turn-by-Turn Arrival Guidance Card -->
+  <div class="bottom-card">
+    <div class="step-tag-row">
+      <span class="step-pill" id="stepPill">Step 1 of 3: Driveway</span>
+      <span class="eta-label" id="etaLabel">⚡ Turn in from Maple Ave</span>
+    </div>
+
+    <div class="step-detail-row">
+      <div class="step-icon-box" id="stepIcon">🚗</div>
+      <div class="step-text">
+        <h3 id="stepHeading">Turn East off N. Maple Ave</h3>
+        <p id="stepDesc">Take the North driveway entrance into Meridian Professional Center complex.</p>
+      </div>
+    </div>
+
+    <div class="step-controls">
+      <button class="ctrl-btn btn-prev" id="btnPrev" onclick="prevStep()" disabled style="opacity:0.4;">&larr; Prev</button>
+      <button class="ctrl-btn btn-next" id="btnNext" onclick="nextStep()">Next Step &rarr;</button>
+    </div>
+  </div>
+
+  <!-- Leaflet Map JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <script>
+    // Exact GPS Coordinates for 7045 N Maple Ave (Meridian Professional Center)
+    const COMPLEX_CENTER = [36.839634, -119.756200];
+    const DRIVEWAY_NORTH = [36.839880, -119.756900]; // Maple Ave entrance
+    const DRIVEWAY_SOUTH = [36.839250, -119.756900];
+
+    // Suite 101 Locations (Northwest corner of complex)
+    const PARKING_SUITE_101 = [36.839820, -119.756380];
+    const DOOR_SUITE_101    = [36.839680, -119.756350];
+
+    // Suite 108 Locations (Southeast wing of complex)
+    const PARKING_SUITE_108 = [36.839350, -119.755850];
+    const DOOR_SUITE_108    = [36.839420, -119.755950];
+
+    // Map Layers
+    let currentMode = 'clinic'; // 'clinic' (101) or 'billing' (108)
+    let currentStep = 0;
+
+    // Initialize Leaflet
+    const map = L.map('map', {
+      zoomControl: false,
+      attributionControl: false
+    }).setView(COMPLEX_CENTER, 19);
+
+    // High-Resolution ESRI World Imagery (Real Satellite Tiles)
+    const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 20,
+      subdomains: ['server', 'services']
+    }).addTo(map);
+
+    // OpenStreetMap alternative
+    const streetLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19
+    });
+
+    // Layer Group for Dynamic Navigation Overlays
+    const navLayer = L.layerGroup().addTo(map);
+
+    // Turn-by-Turn Steps Database
+    const stepsData = {
+      clinic: [
+        {
+          pill: "Step 1 of 3: Driveway",
+          eta: "⚡ Turn in from Maple Ave",
+          icon: "🚗",
+          heading: "Turn East off N. Maple Ave",
+          desc: "Enter the North driveway of Meridian Center directly off Maple Ave.",
+          cam: DRIVEWAY_NORTH,
+          zoom: 18
+        },
+        {
+          pill: "Step 2 of 3: Park Here",
+          eta: "🅿️ Stalls 1–15 facing Suite 101",
+          icon: "🅿️",
+          heading: "Park in North Patient Stalls",
+          desc: "Park in the designated patient stalls directly facing the Suite 101 glass facade.",
+          cam: PARKING_SUITE_101,
+          zoom: 19
+        },
+        {
+          pill: "Step 3 of 3: Doorway",
+          eta: "🚪 Ground Floor • Flat ADA",
+          icon: "🩺",
+          heading: "Enter Glass Door: Suite 101",
+          desc: "Door marked 'Suite 101 - Reddy Medical Group'. Zero steps, automatic ADA access.",
+          cam: DOOR_SUITE_101,
+          zoom: 20
+        }
+      ],
+      billing: [
+        {
+          pill: "Step 1 of 3: Driveway",
+          eta: "⚡ South Driveway Entry",
+          icon: "🚗",
+          heading: "Enter via South Maple Driveway",
+          desc: "Take the South entrance off Maple Ave toward the rear executive wing.",
+          cam: DRIVEWAY_SOUTH,
+          zoom: 18
+        },
+        {
+          pill: "Step 2 of 3: Park Here",
+          eta: "🅿️ East Executive Stalls",
+          icon: "🅿️",
+          heading: "Park in South/East Lot",
+          desc: "Park in the stalls closest to the southeast administrative wing.",
+          cam: PARKING_SUITE_108,
+          zoom: 19
+        },
+        {
+          pill: "Step 3 of 3: Doorway",
+          eta: "💼 Suite 108 Office",
+          icon: "🏢",
+          heading: "Enter Suite 108 Entrance",
+          desc: "Door marked 'Reddy Medical Group Corporate & Billing'. Ring reception bell.",
+          cam: DOOR_SUITE_108,
+          zoom: 20
+        }
+      ]
+    };
+
+    function renderNavOverlays() {
+      navLayer.clearLayers();
+
+      if (currentMode === 'clinic') {
+        // 1. Building Footprint / X-Ray Overlay (Semi-transparent)
+        const bldgBounds = [
+          [36.839800, -119.756500],
+          [36.839800, -119.755700],
+          [36.839350, -119.755700],
+          [36.839350, -119.756500]
+        ];
+        L.polygon(bldgBounds, {
+          color: '#334155',
+          weight: 2,
+          fillColor: '#0f172a',
+          fillOpacity: 0.4
+        }).addTo(navLayer);
+
+        // 2. Highlighted Suite 101 Zone on Building
+        const suite101Bounds = [
+          [36.839780, -119.756480],
+          [36.839780, -119.756250],
+          [36.839620, -119.756250],
+          [36.839620, -119.756480]
+        ];
+        L.polygon(suite101Bounds, {
+          color: '#10b981',
+          weight: 2,
+          fillColor: '#10b981',
+          fillOpacity: 0.4
+        }).addTo(navLayer);
+
+        // 3. Recommended Parking Zone (Green Polygon over stalls)
+        const parkingZone = [
+          [36.839900, -119.756480],
+          [36.839900, -119.756250],
+          [36.839820, -119.756250],
+          [36.839820, -119.756480]
+        ];
+        L.polygon(parkingZone, {
+          color: '#34d399',
+          weight: 2,
+          dashArray: '4, 4',
+          fillColor: '#10b981',
+          fillOpacity: 0.35
+        }).addTo(navLayer);
+
+        // 4. Animated Driving & Walking Path
+        const pathPoints = [
+          DRIVEWAY_NORTH,
+          [36.839880, -119.756380], // Drive into lot
+          PARKING_SUITE_101,         // Park here
+          [36.839750, -119.756350], // Sidewalk
+          DOOR_SUITE_101            // Door
+        ];
+        L.polyline(pathPoints, {
+          color: '#38bdf8',
+          weight: 5,
+          className: 'animated-path'
+        }).addTo(navLayer);
+
+        // 5. Driveway Entrance Icon
+        L.marker(DRIVEWAY_NORTH, {
+          icon: L.divIcon({
+            className: 'marker-label',
+            html: '🚗 NORTH ENTRANCE (Enter Here)'
+          })
+        }).addTo(navLayer);
+
+        // 6. Parking Stall Marker
+        L.marker(PARKING_SUITE_101, {
+          icon: L.divIcon({
+            className: 'marker-label',
+            html: '🅿️ RECOMMENDED PARKING'
+          })
+        }).addTo(navLayer);
+
+        // 7. Doorway Pulsing Pin
+        L.marker(DOOR_SUITE_101, {
+          icon: L.divIcon({
+            className: 'pulsing-pin',
+            html: '<span class="marker-label" style="background:#10b981; border-color:#fff; color:#fff; margin-top:-28px;">🎯 SUITE 101 DOOR</span>'
+          })
+        }).addTo(navLayer);
+
+      } else {
+        // BILLING / SUITE 108 MODE
+
+        // 1. Highlighted Suite 108 Zone on Building
+        const suite108Bounds = [
+          [36.839520, -119.756050],
+          [36.839520, -119.755750],
+          [36.839380, -119.755750],
+          [36.839380, -119.756050]
+        ];
+        L.polygon(suite108Bounds, {
+          color: '#0284c7',
+          weight: 2,
+          fillColor: '#0284c7',
+          fillOpacity: 0.45
+        }).addTo(navLayer);
+
+        // 2. Parking Zone South
+        const parkingZoneSouth = [
+          [36.839380, -119.756050],
+          [36.839380, -119.755750],
+          [36.839300, -119.755750],
+          [36.839300, -119.756050]
+        ];
+        L.polygon(parkingZoneSouth, {
+          color: '#38bdf8',
+          weight: 2,
+          dashArray: '4, 4',
+          fillColor: '#0284c7',
+          fillOpacity: 0.35
+        }).addTo(navLayer);
+
+        // 3. Path to Suite 108
+        const pathBilling = [
+          DRIVEWAY_SOUTH,
+          [36.839250, -119.755850],
+          PARKING_SUITE_108,
+          DOOR_SUITE_108
+        ];
+        L.polyline(pathBilling, {
+          color: '#38bdf8',
+          weight: 5,
+          className: 'animated-path'
+        }).addTo(navLayer);
+
+        // Markers
+        L.marker(DRIVEWAY_SOUTH, {
+          icon: L.divIcon({
+            className: 'marker-label',
+            html: '🚗 SOUTH ENTRANCE'
+          })
+        }).addTo(navLayer);
+
+        L.marker(PARKING_SUITE_108, {
+          icon: L.divIcon({
+            className: 'marker-label',
+            html: '🅿️ EXECUTIVE PARKING'
+          })
+        }).addTo(navLayer);
+
+        L.marker(DOOR_SUITE_108, {
+          icon: L.divIcon({
+            className: 'pulsing-pin blue',
+            html: '<span class="marker-label" style="background:#0284c7; color:#fff; margin-top:-28px;">💼 SUITE 108 DOOR</span>'
+          })
+        }).addTo(navLayer);
+      }
+    }
+
+    function setDestination(mode) {
+      currentMode = mode;
+      currentStep = 0;
+
+      const btnClinic = document.getElementById('btnClinic');
+      const btnBilling = document.getElementById('btnBilling');
+
+      if (mode === 'clinic') {
+        btnClinic.className = 'switch-btn active';
+        btnBilling.className = 'switch-btn';
+      } else {
+        btnClinic.className = 'switch-btn';
+        btnBilling.className = 'switch-btn active billing-btn';
+      }
+
+      renderNavOverlays();
+      updateStepCard();
+    }
+
+    function updateStepCard() {
+      const list = stepsData[currentMode];
+      const s = list[currentStep];
+
+      document.getElementById('stepPill').textContent = s.pill;
+      document.getElementById('etaLabel').textContent = s.eta;
+      document.getElementById('stepIcon').textContent = s.icon;
+      document.getElementById('stepHeading').textContent = s.heading;
+      document.getElementById('stepDesc').textContent = s.desc;
+
+      const prevBtn = document.getElementById('btnPrev');
+      const nextBtn = document.getElementById('btnNext');
+
+      prevBtn.disabled = (currentStep === 0);
+      prevBtn.style.opacity = (currentStep === 0) ? '0.4' : '1';
+
+      if (currentStep === list.length - 1) {
+        nextBtn.textContent = "You're at the Door! 🎉";
+        nextBtn.style.background = (currentMode === 'clinic') ? '#10b981' : '#0284c7';
+      } else {
+        nextBtn.textContent = "Next Step →";
+        nextBtn.style.background = '#10b981';
+      }
+
+      // Smooth pan camera to step location on satellite map
+      map.flyTo(s.cam, s.zoom, {
+        duration: 1.2,
+        easeLinearity: 0.25
+      });
+    }
+
+    function nextStep() {
+      const list = stepsData[currentMode];
+      if (currentStep < list.length - 1) {
+        currentStep++;
+        updateStepCard();
+      }
+    }
+
+    function prevStep() {
+      if (currentStep > 0) {
+        currentStep--;
+        updateStepCard();
+      }
+    }
+
+    function centerOnDoor() {
+      const target = (currentMode === 'clinic') ? DOOR_SUITE_101 : DOOR_SUITE_108;
+      map.flyTo(target, 20, { duration: 1 });
+    }
+
+    function toggleLayer(type) {
+      document.getElementById('btnSatLayer').classList.toggle('active', type === 'sat');
+      document.getElementById('btnStreetLayer').classList.toggle('active', type === 'street');
+
+      if (type === 'sat') {
+        map.removeLayer(streetLayer);
+        map.addLayer(satelliteLayer);
+      } else {
+        map.removeLayer(satelliteLayer);
+        map.addLayer(streetLayer);
+      }
+    }
+
+    // Init
+    window.addEventListener('DOMContentLoaded', () => {
+      renderNavOverlays();
+      updateStepCard();
+    });
+  </script>
+</body>
+</html>
