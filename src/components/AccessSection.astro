@@ -1,0 +1,25 @@
+<section class="section section-access" id="referrals">
+  <div class="shell access-grid">
+    <div class="access-copy"><p class="eyebrow">For the care team</p><h2>Keep the next step moving.</h2><p>Secure channels for referring physicians, hospital discharge coordinators, surgical clinics, wound care centers, and records requests.</p><a class="text-link" href="tel:5593267393">Talk with the office <span aria-hidden="true">↗</span></a></div>
+    <div class="access-card">
+      <div class="access-card-title"><span>Verified clinical lines</span><span class="secure-badge">Secure fax</span></div>
+      <div class="fax-row"><div><small>Primary clinical fax</small><strong>(559) 369-2488</strong></div><button type="button" class="copy-fax" data-copy="5593692488">Copy</button></div>
+      <div class="fax-row"><div><small>Administrative fax</small><strong>(559) 446-0409</strong></div><button type="button" class="copy-fax" data-copy="5594460409">Copy</button></div>
+      <p class="access-note">For records, include the patient’s full legal name, date of birth, signed authorization, and the date range requested. Routine requests typically take 5–10 business days.</p>
+    </div>
+    <div class="access-card portal-card">
+      <div class="access-card-title"><span>Patient portals</span><span class="portal-mark">↗</span></div>
+      <p>Access hospital records, labs, imaging, and health summaries through the affiliated systems where care was received.</p>
+      <div class="portal-links"><a href="https://www.samc.com/patients-and-visitors/patient-portal" target="_blank" rel="noreferrer"><span>Saint Agnes Medical Center</span><b>↗</b></a><a href="https://mychart.communitymedical.org/mychart/" target="_blank" rel="noreferrer"><span>Community Medical Centers MyChart</span><b>↗</b></a></div>
+    </div>
+  </div>
+</section>
+<script>
+  const copyButtons = document.querySelectorAll('.copy-fax');
+  copyButtons.forEach((button) => button.addEventListener('click', async () => {
+    const value = button.getAttribute('data-copy');
+    if (!value) return;
+    try { await navigator.clipboard.writeText(value); button.textContent = 'Copied'; setTimeout(() => button.textContent = 'Copy', 1800); }
+    catch { button.textContent = 'Select'; setTimeout(() => button.textContent = 'Copy', 1800); }
+  }));
+</script>

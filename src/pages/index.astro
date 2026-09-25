@@ -1,0 +1,66 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import BrandMark from '../components/BrandMark.astro';
+import CareSection from '../components/CareSection.astro';
+import DoctorsSection from '../components/DoctorsSection.astro';
+import VisitSection from '../components/VisitSection.astro';
+import AccessSection from '../components/AccessSection.astro';
+import Footer from '../components/Footer.astro';
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'MedicalClinic',
+  '@id': 'https://reddymedicalgroupfresno.com/#clinic',
+  name: 'Reddy Medical Group, Inc.',
+  image: 'https://reddymedicalgroupfresno.com/reddy-medical-group-entrance.jpg',
+  description: 'Adult internal medicine, inpatient hospitalist medicine, and infectious disease consultation in Fresno, California.',
+  telephone: '+1-559-326-7393',
+  faxNumber: '+1-559-369-2488',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: '7045 North Maple Avenue, Suites 108 & 101',
+    addressLocality: 'Fresno',
+    addressRegion: 'CA',
+    postalCode: '93720-8008',
+    addressCountry: 'US'
+  },
+  openingHoursSpecification: [{
+    '@type': 'OpeningHoursSpecification',
+    dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+    opens: '08:00',
+    closes: '17:00'
+  }],
+  medicalSpecialty: ['https://schema.org/InternalMedicine', 'https://schema.org/InfectiousDisease']
+};
+---
+<Layout title="Reddy Medical Group | Thoughtful medical care in Fresno" description="Reddy Medical Group provides adult internal medicine, inpatient hospitalist medicine, and infectious disease consultation in Fresno, California.">
+  <Fragment slot="head"><script type="application/ld+json" set:html={JSON.stringify(structuredData)}></script></Fragment>
+  <Header />
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="shell hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow hero-eyebrow"><span class="eyebrow-line"></span> Reddy Medical Group · Fresno, California</p>
+          <h1 id="hero-title">A steadier way to care for your <em>whole health.</em></h1>
+          <p class="hero-lead">Adult internal medicine, hospitalist care, and infectious disease consultation — connected by physicians who have served the Central Valley for more than 30 years.</p>
+          <div class="hero-actions"><a class="button button-primary" href="tel:5593267393">Call the office <span aria-hidden="true">↗</span></a><a class="button button-quiet" href="#visit">Plan your visit <span aria-hidden="true">↓</span></a></div>
+          <div class="hero-footnote"><span class="hero-pulse"></span><span>Independent physician-led practice</span><span class="hero-foot-divider"></span><span>Monday–Friday · 8 AM–5 PM</span></div>
+        </div>
+        <div class="hero-visual">
+          <div class="hero-orbit orbit-one"></div><div class="hero-orbit orbit-two"></div>
+          <div class="hero-image-frame"><img src="/reddy-medical-group-entrance.jpg" alt="Reddy Medical Group entrance at Meridian Professional Center in Fresno" fetchpriority="high" /><div class="image-caption"><span>Meridian Professional Center</span><span>7045 N Maple Avenue</span></div></div>
+          <div class="hero-location-card"><span class="location-pin" aria-hidden="true">⌖</span><div><strong>Find the office</strong><span>Suites 101 &amp; 108 · Fresno, CA</span></div><a href="https://maps.google.com/?q=7045+N+Maple+Ave+Fresno+CA+93720" target="_blank" rel="noreferrer" aria-label="Open Reddy Medical Group in Google Maps">↗</a></div>
+          <div class="hero-stamp"><span>30</span><small>years<br />of care</small></div>
+        </div>
+      </div>
+    </section>
+    <section class="signal-bar" aria-label="Practice highlights"><div class="shell signal-items"><div><strong>30+</strong><span>years in the Central Valley</span></div><div><strong>2</strong><span>physicians, one connected practice</span></div><div><strong>3</strong><span>hospital affiliations</span></div><div><strong>1</strong><span>clear place to start</span></div></div></section>
+    <CareSection />
+    <DoctorsSection />
+    <VisitSection />
+    <AccessSection />
+    <section class="portal-callout" aria-label="Insurance and coverage"><div class="shell portal-callout-inner"><div><p class="eyebrow eyebrow-light">Coverage, made clearer</p><h2>We work with major commercial plans, Medicare, and regional managed care programs.</h2></div><div class="coverage-list"><span>Medicare</span><span>Community Care Health</span><span>Blue Shield of California</span><span>Aetna</span><span>Cigna</span><span>UnitedHealthcare</span><small>Plan networks vary. Please confirm coverage with your carrier or call the office before your appointment.</small></div></div></section>
+  </main>
+  <Footer />
+</Layout>

@@ -1,98 +1,78 @@
-# Reddy Medical Group, Inc. — Official Digital Practice Hub & Suite Navigator™
+# Reddy Medical Group
 
-[![Status](https://img.shields.io/badge/status-active-success.svg)]()
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)]()
-[![HIPAA](https://img.shields.io/badge/HIPAA-Safe%20Static%20Architecture-teal.svg)]()
-[![Schema](https://img.shields.io/badge/Schema.org-MedicalClinic%20%26%20Physician-orange.svg)]()
+A boutique, patient-first website for Reddy Medical Group, an independent medical practice in Fresno, California.
 
-Official website and digital patient arrival hub for **Reddy Medical Group, Inc.** located at **Meridian Professional Center** in Fresno, California.
+The primary experience is now built with Astro using native `.astro` components, static output, and small vanilla JavaScript islands for navigation, suite switching, and fax copying. The site intentionally does not collect protected health information.
 
----
+## Practice information
 
-## 🏥 Practice Overview
+- **Reddy Medical Group, Inc.**
+- **Location:** Meridian Professional Center, 7045 North Maple Avenue, Suites 101 & 108, Fresno, CA 93720-8008
+- **Phone:** `(559) 326-7393`
+- **Clinical fax:** `(559) 369-2488`
+- **Administrative fax:** `(559) 446-0409`
+- **Care:** Adult internal medicine, inpatient hospitalist medicine, and infectious disease consultation
+- **Physicians:** Dr. Kiran Manthani Reddy, MD and Dr. Manthani Padmanabh Reddy, MD
 
-* **Physicians:**
-  * **Dr. Kiran Manthani Reddy, MD** — Internal Medicine Specialist & Hospitalist (ABIM Certified, 30+ yrs experience, CA Lic. `#A055459`, NPI-1: `1588778435`)
-  * **Dr. Manthani Padmanabh Reddy, MD** — Infectious Disease Specialist (ABIM Certified, CA Lic. `#A49497`)
-* **Practice Organization:** Reddy Medical Group, Inc. (NPI-2: `1407995038`, Tax ID: `77-0476968`)
-* **Location:** 7045 North Maple Avenue, Suites 101 & 108, Fresno, CA 93720-8008
-* **Contact:** Phone: `(559) 326-7393` | Fax: `(559) 369-2488`
-* **Hospital Affiliations:** Saint Agnes Medical Center (SAMC) & Community Medical Centers (CRMC & Clovis Community)
+## Astro project structure
 
----
-
-## 🌟 Key Features
-
-### 1. Modern, Responsive Medical Website (`index.html`)
-* **Zero-Liability / HIPAA-Safe Static Architecture:** Built entirely in clean HTML5, CSS3, and modern vanilla JavaScript. No external contact databases, PHI collection, or insecure forms to compromise patient privacy.
-* **Full Medical Schema.org JSON-LD Structured Data:** Embedded high-authority schema markup (`MedicalClinic` and `Physician` types) with verified NPI numbers, geocoordinates, operating hours, and accepted insurance networks to reinforce Google Local Map Pack and Knowledge Panel verification.
-* **Practice Disambiguation Banner:** Proactively resolves online confusion between Dr. Kiran Manthani Reddy in Fresno and similarly named practitioners (such as Dr. H. Kiran Kumar Reddy in Hanford/Visalia or Reddy Medical Group in Georgia).
-* **Direct Patient Portal Access:** Direct routing for patients to Saint Agnes Medical Center / Trinity Health and Community Medical Centers MyChart portals.
-
-### 2. Dual-Suite Logistics Guide
-Solves patient arrival confusion inside Meridian Professional Center:
-* **Suite 101:** Clinical Examinations & Patient Check-In (Ground floor, ADA direct access) with direct one-tap Google Maps directions.
-* **Suite 108:** Administration, Billing & Corporate Inquiries with dedicated contact and mailing specs.
-* **Experimental Wayfinding Prototypes:** The repository preserves early R&D satellite wayfinding prototypes in `suite-navigator/` (2D Leaflet map) and `suite-navigator-3d/` (3D camera mission prototype).
-
-### 3. Business Development & Forensic Audit Documentation
-* **`PITCH_PROPOSAL.md`:** Comprehensive executive proposal documenting live online errors, false "permanently closed" directory scrapers, misrouted faxes, and operational ROI.
-* **`docs/Reddy_Medical_Group_Digital_Strategy.pdf`:** 10 MB presentation deck detailing the complete digital transformation strategy.
-
----
-
-## 📁 Repository Structure
-
-```
+```text
 .
-├── index.html                   # Main Reddy Medical Group practice website
-├── styles.css                   # Custom clinical styling, typography & responsive layouts
-├── script.js                    # Mobile navigation, suite switching & interaction logic
-├── PITCH_PROPOSAL.md            # Executive proposal & live forensic web audit
-├── README.md                    # Repository documentation
-├── .gitignore                   # Standard git ignore definitions
-│
-├── suite-navigator/             # 2D High-Resolution Satellite Suite Navigator
-│   └── index.html               # Leaflet + ESRI World Imagery arrival interface
-│
-├── suite-navigator-3d/          # 3D God's Eye Precision Telemetry Navigator
-│   ├── index.html               # 3D HUD & camera mission viewport
-│   ├── styles.css               # Obsidian glassmorphic styling
-│   ├── app.js                   # Navigation telemetry & waypoint controller
-│   └── meridian_satellite.jpg   # Satellite aerial imagery plate
-│
-├── docs/                        # Presentation & Strategy Deliverables
-│   └── Reddy_Medical_Group_Digital_Strategy.pdf
-│
-└── [aerial assets]              # High-resolution Meridian Center aerial plates & PNGs
+├── src/
+│   ├── components/
+│   │   ├── AccessSection.astro
+│   │   ├── BrandMark.astro
+│   │   ├── CareSection.astro
+│   │   ├── DoctorsSection.astro
+│   │   ├── Footer.astro
+│   │   ├── Header.astro
+│   │   └── VisitSection.astro
+│   ├── layouts/Layout.astro
+│   ├── pages/index.astro
+│   └── styles/global.css
+├── public/
+│   └── reddy-medical-group-entrance.jpg
+├── astro.config.mjs
+└── package.json
 ```
 
----
+The repository also preserves the original static site and experimental suite navigator prototypes for reference and backwards compatibility. Astro is the canonical application experience.
 
-## 🚀 Quick Start / Local Preview
+## Local development
 
-You can preview the site locally using any standard static server:
+Requirements: Node.js 18.17 or newer.
 
-```powershell
-# Using Python
-python -m http.server 8000
-
-# Using Node / npx
-npx serve .
+```bash
+npm install
+npm run dev
 ```
 
-Then open `http://localhost:8000` in your web browser.
+The development server binds to `0.0.0.0` for remote previews. To choose a port:
 
----
+```bash
+npm run dev -- --port 4321
+```
 
-## 🌐 Deployment
+## Production build
 
-Because this repository uses a static architecture, it can be deployed with zero hosting costs and SSL:
-* **GitHub Pages:** Enable under **Settings > Pages > Branch: master (or main) / (root)**.
-* **Cloudflare Pages / Vercel / Netlify:** Connect this GitHub repository with root directory `/` and output directory `./`.
+```bash
+npm run build
+npm run preview
+```
 
----
+Astro outputs the static site to `dist/`.
 
-## 📄 License & Attribution
+## Design and engineering notes
 
-Designed and developed for Reddy Medical Group, Inc. All rights reserved.
+- The visual direction is **calm precision**: editorial typography, generous negative space, restrained clinical color, and subtle tactile depth.
+- The page uses semantic HTML, responsive layouts, visible keyboard focus, reduced-motion support, accessible tabs, descriptive image alt text, and no PHI collection.
+- External portal and map links open in a new tab with `rel="noreferrer"`.
+- Medical practice structured data is emitted from the Astro page for local search context.
+- Below-the-fold imagery is lazy loaded; the hero image is prioritized.
+
+## Related repository assets
+
+- `PITCH_PROPOSAL.md` — practice and digital strategy proposal
+- `docs/Reddy_Medical_Group_Digital_Strategy.pdf` — strategy presentation
+- `suite-navigator/` — 2D suite navigation prototype
+- `suite-navigator-3d/` — 3D suite navigation prototype

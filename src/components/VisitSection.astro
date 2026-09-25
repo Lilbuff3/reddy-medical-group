@@ -1,0 +1,37 @@
+<section class="section section-visit" id="visit">
+  <div class="shell visit-shell">
+    <div class="visit-intro">
+      <p class="eyebrow">Make your way here</p>
+      <h2>A clear start to your visit.</h2>
+      <p>Our offices are inside Meridian Professional Center at 7045 North Maple Avenue. Choose the destination that matches what you need.</p>
+      <a class="text-link" href="https://maps.google.com/?q=7045+N+Maple+Ave+Fresno+CA+93720" target="_blank" rel="noreferrer">Open directions in Maps <span aria-hidden="true">↗</span></a>
+      <div class="visit-hours"><span class="hours-dot"></span><div><strong>Office hours</strong><span>Monday–Friday · 8:00 AM–5:00 PM</span></div></div>
+    </div>
+    <div class="suite-card" data-suite-tabs>
+      <div class="suite-card-head"><span>Meridian Professional Center</span><span>Fresno, CA</span></div>
+      <div class="suite-tabs" role="tablist" aria-label="Office suite destinations">
+        <button class="suite-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="suite-101" id="tab-101" data-suite="suite-101"><span>Suite 101</span><small>Clinical appointments</small></button>
+        <button class="suite-tab" type="button" role="tab" aria-selected="false" aria-controls="suite-108" id="tab-108" data-suite="suite-108"><span>Suite 108</span><small>Administration &amp; billing</small></button>
+      </div>
+      <div class="suite-panel is-active" id="suite-101" role="tabpanel" aria-labelledby="tab-101">
+        <div class="suite-panel-copy"><p class="panel-kicker">Patient entrance</p><h3>Suite 101</h3><p>Scheduled doctor appointments, clinical evaluations, and check-in take place here. Please bring photo identification and your current insurance card.</p><div class="suite-points"><span>Free patient parking</span><span>ADA-accessible entrance</span><span>Arrive 15 minutes early</span></div><a class="small-button" href="https://maps.google.com/?q=7045+N+Maple+Ave+Ste+101+Fresno+CA+93720" target="_blank" rel="noreferrer">Directions to Suite 101 <span aria-hidden="true">↗</span></a></div>
+        <div class="suite-image"><img src="/reddy-medical-group-entrance.jpg" alt="Reddy Medical Group Suite 101 entrance at Meridian Professional Center" loading="lazy" /><span>Look for the amada HEALTH / Reddy Medical Group sign.</span></div>
+      </div>
+      <div class="suite-panel" id="suite-108" role="tabpanel" aria-labelledby="tab-108" hidden>
+        <div class="suite-panel-copy"><p class="panel-kicker">Administrative office</p><h3>Suite 108</h3><p>Practice administration, billing questions, correspondence, credentialing, and official records coordination are handled here.</p><div class="suite-points"><span>Phone · (559) 326-7393</span><span>Admin fax · (559) 446-0409</span><span>Monday–Friday · 8–5</span></div><a class="small-button" href="https://maps.google.com/?q=7045+N+Maple+Ave+Ste+108+Fresno+CA+93720" target="_blank" rel="noreferrer">Directions to Suite 108 <span aria-hidden="true">↗</span></a></div>
+        <div class="suite-address"><span class="address-icon" aria-hidden="true">⌖</span><p>Reddy Medical Group, Inc.<br />7045 N Maple Ave, Suite 108<br />Fresno, CA 93720-8008</p><span class="address-note">Corporate headquarters &amp; administrative center</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+<script>
+  document.querySelectorAll('[data-suite-tabs]').forEach((group) => {
+    const tabs = group.querySelectorAll('[data-suite]');
+    const panels = group.querySelectorAll('.suite-panel');
+    tabs.forEach((tab) => tab.addEventListener('click', () => {
+      const target = tab.getAttribute('data-suite');
+      tabs.forEach((item) => { item.classList.toggle('is-active', item === tab); item.setAttribute('aria-selected', String(item === tab)); });
+      panels.forEach((panel) => { const active = panel.id === target; panel.classList.toggle('is-active', active); panel.hidden = !active; });
+    }));
+  });
+</script>

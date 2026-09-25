@@ -1,0 +1,40 @@
+---
+import BrandMark from './BrandMark.astro';
+---
+<div class="notice-bar" role="note">
+  <div class="shell notice-inner">
+    <span class="notice-label">Care note</span>
+    <span>If you are experiencing a life-threatening emergency, call <strong>911</strong> or go to the nearest emergency room.</span>
+    <a href="tel:5593267393" class="notice-phone">(559) 326-7393 <span aria-hidden="true">↗</span></a>
+  </div>
+</div>
+<header class="site-header" id="top">
+  <div class="shell nav-wrap">
+    <BrandMark />
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Open navigation">
+      <span></span><span></span>
+    </button>
+    <nav id="site-nav" class="site-nav" aria-label="Main navigation">
+      <a href="#care">Care</a>
+      <a href="#physicians">Physicians</a>
+      <a href="#visit">Your visit</a>
+      <a href="#referrals">For clinicians</a>
+      <a href="#contact" class="nav-cta">Contact the office <span aria-hidden="true">↗</span></a>
+    </nav>
+  </div>
+</header>
+<script>
+  const toggle = document.querySelector('.nav-toggle');
+  const nav = document.querySelector('#site-nav');
+  toggle?.addEventListener('click', () => {
+    const open = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!open));
+    toggle.setAttribute('aria-label', open ? 'Open navigation' : 'Close navigation');
+    nav?.classList.toggle('is-open', !open);
+  });
+  nav?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => {
+    toggle?.setAttribute('aria-expanded', 'false');
+    toggle?.setAttribute('aria-label', 'Open navigation');
+    nav?.classList.remove('is-open');
+  }));
+</script>
