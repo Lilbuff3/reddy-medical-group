@@ -29,12 +29,11 @@ Official website and digital patient arrival hub for **Reddy Medical Group, Inc.
 * **Practice Disambiguation Banner:** Proactively resolves online confusion between Dr. Kiran Manthani Reddy in Fresno and similarly named practitioners (such as Dr. H. Kiran Kumar Reddy in Hanford/Visalia or Reddy Medical Group in Georgia).
 * **Direct Patient Portal Access:** Direct routing for patients to Saint Agnes Medical Center / Trinity Health and Community Medical Centers MyChart portals.
 
-### 2. Dual-Suite Logistics & Suite Navigator™
+### 2. Dual-Suite Logistics Guide
 Solves patient arrival confusion inside Meridian Professional Center:
-* **Suite 101:** Clinical Examinations & Patient Check-In (Ground floor, ADA direct access)
-* **Suite 108:** Administration, Billing & Corporate Inquiries
-* **2D Satellite Arrival Guide (`suite-navigator/index.html`):** Interactive Leaflet.js map with ESRI high-resolution aerial imagery and step-by-step patient directions.
-* **3D God's Eye Suite Navigator (`suite-navigator-3d/index.html`):** Real aerial telemetry camera angles, approach waypoints, and doorway targeting.
+* **Suite 101:** Clinical Examinations & Patient Check-In (Ground floor, ADA direct access) with direct one-tap Google Maps directions.
+* **Suite 108:** Administration, Billing & Corporate Inquiries with dedicated contact and mailing specs.
+* **Experimental Wayfinding Prototypes:** The repository preserves early R&D satellite wayfinding prototypes in `suite-navigator/` (2D Leaflet map) and `suite-navigator-3d/` (3D camera mission prototype).
 
 ### 3. Business Development & Forensic Audit Documentation
 * **`PITCH_PROPOSAL.md`:** Comprehensive executive proposal documenting live online errors, false "permanently closed" directory scrapers, misrouted faxes, and operational ROI.
