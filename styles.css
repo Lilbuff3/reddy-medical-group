@@ -292,6 +292,7 @@ a:hover {
   padding: 0.5rem 1rem;
   border-radius: var(--radius-sm);
   transition: var(--transition);
+  white-space: nowrap;
 }
 
 .nav-btn:hover {
@@ -821,7 +822,7 @@ a:hover {
    ========================================================================== */
 .physicians-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 2rem;
 }
 
@@ -1141,7 +1142,7 @@ a:hover {
    ========================================================================== */
 .referrals-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 2rem;
 }
 
@@ -1603,6 +1604,16 @@ a:hover {
 
   .suite-tabs {
     grid-template-columns: 1fr;
+  }
+
+  .trust-strip {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem 1rem;
+  }
+
+  .trust-divider {
+    display: none;
   }
 
   .footer-grid {
